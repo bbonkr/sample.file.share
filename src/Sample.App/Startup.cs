@@ -31,11 +31,10 @@ namespace Sample.App
         public void ConfigureServices(IServiceCollection services)
         {
             var apiVersion = new ApiVersion(1, 0);
-            
+
             var connectionString = Configuration.GetConnectionString("Database");
 
             services.ConfigureAppOptions(Configuration);
-            services.ConfigureAzureStorageAccountOptions(Configuration);
 
             services.AddDbContext<DefaultDbContext>(options =>
             {
@@ -44,6 +43,8 @@ namespace Sample.App
                     sqlServerOptions.MigrationsAssembly(typeof(PlaceHolder).Assembly.FullName);
                 });
             });
+
+            services.AddDomainServices(Configuration);
 
             services.AddControllers();
 

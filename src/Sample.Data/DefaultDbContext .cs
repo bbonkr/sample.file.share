@@ -17,6 +17,8 @@ namespace Sample.Data
 
         public DbSet<FileInformation> Files { get; set; }
 
+        public DbSet<UserFileAccessControl> Access { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

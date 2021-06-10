@@ -9,7 +9,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 using Sample.Services;
 
-namespace Microsoft.Extensions.DependencyInjection { 
+namespace Microsoft.Extensions.DependencyInjection
+{
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection ConfigureAzureStorageAccountOptions(this IServiceCollection services, IConfiguration configuration)
