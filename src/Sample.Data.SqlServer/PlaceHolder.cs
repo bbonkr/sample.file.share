@@ -2,7 +2,7 @@
 
 namespace Sample.Data.SqlServer
 {
-    public class Class1
+    public class PlaceHolder
     {
     }
 }

@@ -11,6 +11,8 @@ namespace Sample.Entities
 
         public Guid FileId { get; set; }
 
+        public string Token { get; set; }
+
         public DateTimeOffset? ExpiresOn { get; set; }
 
         public virtual User User { get; set; }
