@@ -6,11 +6,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+
+using Sample.Data;
+using Sample.Data.SqlServer;
 
 namespace Sample.App
 {
@@ -26,12 +30,24 @@ namespace Sample.App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var apiVersion = new ApiVersion(1, 0);
+            
+            var connectionString = Configuration.GetConnectionString("Database");
+
+            services.ConfigureAppOptions(Configuration);
+            services.ConfigureAzureStorageAccountOptions(Configuration);
+
+            services.AddDbContext<DefaultDbContext>(options =>
+            {
+                options.UseSqlServer(connectionString, sqlServerOptions =>
+                {
+                    sqlServerOptions.MigrationsAssembly(typeof(PlaceHolder).Assembly.FullName);
+                });
+            });
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sample.App", Version = "v1" });
-            });
+
+            services.AddApiVersioningAndSwaggerGen(apiVersion);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,8 +56,7 @@ namespace Sample.App
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sample.App v1"));
+                app.UseSwaggerUIWithApiVersioning();
             }
 
             app.UseHttpsRedirection();
