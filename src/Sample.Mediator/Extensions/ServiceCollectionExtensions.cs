@@ -17,11 +17,11 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddDomainServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.ConfigureAzureStorageAccountOptions(configuration);
-
-            services.AddSampleAzureBlobStorageService();
-
-            services.AddMediatR(typeof(PlaceHolder).Assembly);
+            services
+                .ConfigureAzureStorageAccountOptions(configuration)
+                .AddSampleAzureBlobStorageService()
+                .AddTokenService()
+                .AddMediatR(typeof(PlaceHolder).Assembly);
 
             return services;
         }

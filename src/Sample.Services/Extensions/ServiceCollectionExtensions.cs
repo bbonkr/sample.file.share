@@ -52,5 +52,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
             return services;
         }
+
+        public static IServiceCollection AddTokenService(this IServiceCollection services)
+        {
+            services.AddTransient<ITokenService, TokenService>();
+            return services;
+        }
     }
 }

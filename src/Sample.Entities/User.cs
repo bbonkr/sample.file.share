@@ -17,5 +17,10 @@ namespace Sample.Entities
         public string Email { get; set; }
 
         public virtual ICollection<UserFileAccessControl> FileAccess { get; set; }
+
+        /// <summary>
+        /// File list of Created by me
+        /// </summary>
+        public virtual ICollection<FileInformation> Files { get; set; }
     }
 }
