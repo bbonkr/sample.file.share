@@ -32,7 +32,7 @@ namespace Sample.Mediator.FileShareDomain.Queries
         public async Task<FileByTokenQueryResult> Handle(FileByTokenQuery request, CancellationToken cancellationToken)
         {
             var user = await dbContext.Users
-                .Where(x => x.Id == request.UserId)
+                .Where(x => x.Email == request.UserImpersonate)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken);
 
@@ -43,7 +43,7 @@ namespace Sample.Mediator.FileShareDomain.Queries
 
             var file = await dbContext.Access
                 .Include(x => x.File)
-                .Where(x => x.UserId == request.UserId)
+                .Where(x => x.UserId == user.Id)
                 .Where(x => x.Token == request.FileToken)
                 .Where(x => !x.ExpiresOn.HasValue || (x.ExpiresOn.HasValue && x.ExpiresOn.Value > DateTimeOffset.UtcNow))
                 .Select(x => x.File)
