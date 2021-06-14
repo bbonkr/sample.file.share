@@ -20,6 +20,10 @@ namespace Sample.Entities
 
         public DateTimeOffset CreatedAt { get; set; }
 
+        public Guid CreatedBy { get; set; }
+
         public virtual ICollection<UserFileAccessControl> FileAccess { get; set; }
+
+        public virtual User Creator { get; set; }
     }
 }

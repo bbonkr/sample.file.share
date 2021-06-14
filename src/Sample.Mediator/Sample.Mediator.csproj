@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="kr.bbon.EntityFrameworkCore.Extensions" Version="1.0.2" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
@@ -13,10 +14,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Sample.Data\Sample.Data.csproj" />
     <ProjectReference Include="..\Sample.Services\Sample.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="FileShareDomain\Commands\" />
   </ItemGroup>
 
 </Project>

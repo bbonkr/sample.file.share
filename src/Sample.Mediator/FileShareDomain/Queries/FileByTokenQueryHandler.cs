@@ -44,9 +44,9 @@ namespace Sample.Mediator.FileShareDomain.Queries
             var file = await dbContext.Access
                 .Include(x => x.File)
                 .Where(x => x.UserId == user.Id)
-                .Where(x => x.Token == request.FileToken)
+                .Where(x => EF.Functions.Collate( x.Token , "Korean_Wansung_CS_AS_KS_WS") == request.FileToken)
                 .Where(x => !x.ExpiresOn.HasValue || (x.ExpiresOn.HasValue && x.ExpiresOn.Value > DateTimeOffset.UtcNow))
-                .Select(x => x.File)
+                .Select((x) => x.File)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(cancellationToken);
                 

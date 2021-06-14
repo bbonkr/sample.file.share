@@ -7,6 +7,8 @@ namespace Sample.Entities
     /// </summary>
     public class UserFileAccessControl
     {
+        public Guid Id { get; set; }
+
         public Guid UserId { get; set; }
 
         public Guid FileId { get; set; }
