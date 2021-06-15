@@ -16,7 +16,7 @@ namespace Sample.Mediator.UserDomain.Commands
 {
     public class DeleteUserCommand : IRequest
     {
-        public string Email { get; set; }
+        public Guid UserId { get; set; }
     }
 
     public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Unit>
@@ -31,7 +31,7 @@ namespace Sample.Mediator.UserDomain.Commands
 
         public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
         {
-            var deleteCandidate = await dbContext.Users.Where(x => x.Email == request.Email.Trim()).FirstOrDefaultAsync(cancellationToken);
+            var deleteCandidate = await dbContext.Users.Where(x => x.Id == request.UserId).FirstOrDefaultAsync(cancellationToken);
             if (deleteCandidate == null)
             {
                 throw new Exception("Could not find the user.");

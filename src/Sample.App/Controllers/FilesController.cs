@@ -14,9 +14,16 @@ using Microsoft.AspNetCore.Mvc;
 using Sample.Mediator.FileShareDomain.Queries;
 using Microsoft.AspNetCore.Http;
 using Sample.Mediator.FileShareDomain.Commands;
+using System.Net;
+using kr.bbon.AspNetCore.Models;
+using kr.bbon.EntityFrameworkCore.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace Sample.App.Controllers
 {
+    /// <summary>
+    /// Files api
+    /// </summary>
     [ApiController]
     [Area(DefaultValues.AreaName)]
     [Route(DefaultValues.RouteTemplate)]
@@ -29,7 +36,18 @@ namespace Sample.App.Controllers
             this.mediator = mediator;
         }
 
+        /// <summary>
+        /// Get owned file list 
+        /// </summary>
+        /// <param name="auth"></param>
+        /// <param name="page"></param>
+        /// <param name="limit"></param>
+        /// <param name="keyword"></param>
+        /// <returns></returns>
         [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponseModel<IPagedModel<FileItemModel>>))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
         public async Task<IActionResult> MyFiles(
             [FromHeader(Name = "X-Api-Key")] string auth,
             [FromQuery] int page = 1,
@@ -46,11 +64,21 @@ namespace Sample.App.Controllers
 
             var result = await mediator.Send(query);
 
-            return StatusCode(System.Net.HttpStatusCode.OK, result);
+            return StatusCode(HttpStatusCode.OK, result);
         }
 
+        /// <summary>
+        /// Download file with token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="auth"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("{token}")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type= typeof(ApiResponseModel))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
         public async Task<IActionResult> FileByToken(
             [FromRoute] string token,
             [FromHeader(Name = "X-Api-Key")] string auth)
@@ -66,7 +94,17 @@ namespace Sample.App.Controllers
             return File(result.Buffer, result.ContentType, result.FileName);
         }
 
+        /// <summary>
+        /// Upload files
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="auth"></param>
+        /// <returns></returns>
         [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(ApiResponseModel<IList<UploadFileResult>>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponseModel))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
         public async Task<IActionResult> Upload(
             [FromForm] IList<IFormFile> files,
             [FromHeader(Name = "X-Api-Key")] string auth)
@@ -94,11 +132,22 @@ namespace Sample.App.Controllers
                 }
             }
 
-            return StatusCode(System.Net.HttpStatusCode.Accepted, results);
+            return StatusCode(HttpStatusCode.Created, results);
         }
 
+        /// <summary>
+        /// Generate share file information
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <param name="model"></param>
+        /// <param name="auth"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("{fileId}")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(ApiResponseModel<ShareFileResult>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponseModel))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
         public async Task<IActionResult> GenerateToken(
             [FromRoute] Guid fileId,
             [FromBody] GenerateTokenRequest model,
@@ -114,11 +163,21 @@ namespace Sample.App.Controllers
 
             var result = await mediator.Send(command);
 
-            return StatusCode(System.Net.HttpStatusCode.Accepted, result);
+            return StatusCode(HttpStatusCode.Created, result);
         }
 
+        /// <summary>
+        /// Delete a file
+        /// </summary>
+        /// <param name="fileId"></param>
+        /// <param name="auth"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("{fileId}")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.Accepted, Type = typeof(ApiResponseModel))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponseModel))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
         public async Task<IActionResult> Delete(
             [FromRoute] Guid fileId,
             [FromHeader(Name = "X-Api-Key")] string auth)
@@ -131,7 +190,7 @@ namespace Sample.App.Controllers
 
             await mediator.Send(command);
 
-            return StatusCode(System.Net.HttpStatusCode.OK);
+            return StatusCode(HttpStatusCode.Accepted);
         }
 
 
@@ -142,12 +201,13 @@ namespace Sample.App.Controllers
     public class GenerateTokenRequest
     {
         /// <summary>
-        /// Who
+        /// Who shares with
         /// </summary>
+        [Required]
         public Guid To { get; set; }
 
         /// <summary>
-        /// Until
+        /// Shares until.
         /// </summary>
         public long ExpiresOn { get; set; }
     }
