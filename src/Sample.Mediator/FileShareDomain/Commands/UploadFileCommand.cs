@@ -13,11 +13,12 @@ using Microsoft.Extensions.Logging;
 
 using Sample.Data;
 using Sample.Entities;
+using Sample.Mediator.FileShareDomain.Models;
 using Sample.Services;
 
 namespace Sample.Mediator.FileShareDomain.Commands
 {
-    public class UploadFileCommand : IRequest<UploadFileResult>
+    public class UploadFileCommand : IRequest<FileItemModel>
     {
         /// <summary>
         /// User authentication
@@ -35,14 +36,7 @@ namespace Sample.Mediator.FileShareDomain.Commands
         public Stream Stream { get; set; }
     }
 
-    public class UploadFileResult
-    {
-        public string Name { get; set; }
-
-        public Uri Uri { get; set; }
-    }
-
-    public class UploadFileCommandHander : IRequestHandler<UploadFileCommand, UploadFileResult>
+    public class UploadFileCommandHander : IRequestHandler<UploadFileCommand, FileItemModel>
     {
         public UploadFileCommandHander(
             AzureBlobStorageService<SampleAzureBlobStorageContainer> azureBlobStorageService,
@@ -54,7 +48,7 @@ namespace Sample.Mediator.FileShareDomain.Commands
             this.logger = logger;
         }
 
-        public async Task<UploadFileResult> Handle(UploadFileCommand request, CancellationToken cancellationToken)
+        public async Task<FileItemModel> Handle(UploadFileCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -85,14 +79,19 @@ namespace Sample.Mediator.FileShareDomain.Commands
                     CreatedBy = user.Id,
                 };
 
-                dbContext.Files.Add(fileInformation);
+               var added= dbContext.Files.Add(fileInformation);
                 await dbContext.SaveChangesAsync(cancellationToken);
 
-                return new UploadFileResult
+                return new FileItemModel
                 {
-                    Name = result.BlobName,
-                    Uri = result.Uri,
+                    Id = added.Entity.Id.ToString(),
+                    ContentType = added.Entity.ContentType,
+                    Name = added.Entity.Name,
+                    Uri = added.Entity.Uri,
+                    Size = added.Entity.Size,
+                    CreatedAt = added.Entity.CreatedAt.Ticks,
                 };
+               
             }
             catch (Exception ex)
             {
