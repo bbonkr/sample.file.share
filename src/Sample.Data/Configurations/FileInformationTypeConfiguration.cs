@@ -50,7 +50,8 @@ namespace Sample.Data.Configurations
 
             builder.HasOne(x => x.Creator)
                 .WithMany(x => x.Files)
-                .HasForeignKey(x => x.CreatedBy);
+                .HasForeignKey(x => x.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

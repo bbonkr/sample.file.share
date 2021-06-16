@@ -10,8 +10,8 @@ using Sample.Data;
 namespace Sample.Data.SqlServer.Migrations
 {
     [DbContext(typeof(DefaultDbContext))]
-    [Migration("20210615055206_Initialize database")]
-    partial class Initializedatabase
+    [Migration("20210616031319_Init database")]
+    partial class Initdatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,7 +37,7 @@ namespace Sample.Data.SqlServer.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetimeoffset")
-                        .HasDefaultValue(new DateTimeOffset(new DateTime(2021, 6, 15, 5, 52, 6, 647, DateTimeKind.Unspecified).AddTicks(4671), new TimeSpan(0, 0, 0, 0, 0)))
+                        .HasDefaultValue(new DateTimeOffset(new DateTime(2021, 6, 16, 3, 13, 18, 773, DateTimeKind.Unspecified).AddTicks(5804), new TimeSpan(0, 0, 0, 0, 0)))
                         .HasComment("File uploaded at");
 
                     b.Property<string>("CreatedBy")
@@ -120,7 +120,7 @@ namespace Sample.Data.SqlServer.Migrations
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
-                        .HasComment("Access token '/api/file/{token}'");
+                        .HasComment("Access token '/api/files/{token}'");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -144,7 +144,7 @@ namespace Sample.Data.SqlServer.Migrations
                     b.HasOne("Sample.Entities.User", "Creator")
                         .WithMany("Files")
                         .HasForeignKey("CreatedBy")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Creator");
@@ -155,13 +155,13 @@ namespace Sample.Data.SqlServer.Migrations
                     b.HasOne("Sample.Entities.FileInformation", "File")
                         .WithMany("FileAccess")
                         .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Sample.Entities.User", "User")
                         .WithMany("FileAccess")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("File");

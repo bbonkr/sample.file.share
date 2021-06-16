@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Sample.Data.SqlServer.Migrations
 {
-    public partial class Initializedatabase : Migration
+    public partial class Initdatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,7 @@ namespace Sample.Data.SqlServer.Migrations
                     ContentType = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false, comment: "Content type"),
                     Size = table.Column<long>(type: "bigint", nullable: false, defaultValue: 0L, comment: "File size"),
                     Uri = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false, comment: "File origin access uri;"),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2021, 6, 15, 5, 52, 6, 647, DateTimeKind.Unspecified).AddTicks(4671), new TimeSpan(0, 0, 0, 0, 0)), comment: "File uploaded at"),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false, defaultValue: new DateTimeOffset(new DateTime(2021, 6, 16, 3, 13, 18, 773, DateTimeKind.Unspecified).AddTicks(5804), new TimeSpan(0, 0, 0, 0, 0)), comment: "File uploaded at"),
                     CreatedBy = table.Column<string>(type: "char(36)", nullable: false, comment: "Creator")
                 },
                 constraints: table =>
@@ -41,7 +41,7 @@ namespace Sample.Data.SqlServer.Migrations
                         column: x => x.CreatedBy,
                         principalTable: "AppUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -51,7 +51,7 @@ namespace Sample.Data.SqlServer.Migrations
                     Id = table.Column<string>(type: "char(36)", nullable: false, comment: "Identifier"),
                     UserId = table.Column<string>(type: "char(36)", nullable: false, comment: "User identifier"),
                     FileId = table.Column<string>(type: "char(36)", nullable: false, comment: "File identifier"),
-                    Token = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "Access token '/api/file/{token}'"),
+                    Token = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false, comment: "Access token '/api/files/{token}'"),
                     ExpiresOn = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true, comment: "Expires access")
                 },
                 constraints: table =>
@@ -62,13 +62,13 @@ namespace Sample.Data.SqlServer.Migrations
                         column: x => x.UserId,
                         principalTable: "AppUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Access_Files_FileId",
                         column: x => x.FileId,
                         principalTable: "Files",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
