@@ -18,6 +18,7 @@ using System.Net;
 using kr.bbon.AspNetCore.Models;
 using kr.bbon.EntityFrameworkCore.Extensions;
 using System.ComponentModel.DataAnnotations;
+using Sample.Mediator.FileShareDomain.Models;
 
 namespace Sample.App.Controllers
 {
@@ -102,14 +103,14 @@ namespace Sample.App.Controllers
         /// <returns></returns>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(ApiResponseModel<IList<UploadFileResult>>))]
+        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(ApiResponseModel<IList<FileItemModel>>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponseModel))]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
         public async Task<IActionResult> Upload(
             [FromForm] IList<IFormFile> files,
             [FromHeader(Name = "X-Api-Key")] string auth)
         {
-            var results = new List<UploadFileResult>();
+            var results = new List<FileItemModel>();
 
             foreach (var file in files)
             {
@@ -119,7 +120,7 @@ namespace Sample.App.Controllers
 
                     var command = new UploadFileCommand
                     {
-                        Name = file.Name,
+                        Name = file.FileName,
                         ContentType = file.ContentType,
                         Size = stream.Length,
                         Stream = stream,

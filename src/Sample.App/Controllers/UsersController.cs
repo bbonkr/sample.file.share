@@ -67,7 +67,7 @@ namespace Sample.App.Controllers
         [HttpGet]
         [Route("{email}")]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponseModel<FindByEmailResult>))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponseModel<UserModel>))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponseModel))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponseModel))]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
@@ -95,7 +95,7 @@ namespace Sample.App.Controllers
         /// <returns></returns>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(ApiResponseModel<CreateUserResult>))]
+        [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(ApiResponseModel<UserModel>))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ApiResponseModel))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponseModel))]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
