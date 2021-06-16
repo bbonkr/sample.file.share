@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { createReducer } from 'typesafe-actions';
 import {
-    FindByEmailResultApiResponseModel,
+    UserModelApiResponseModel,
     ApiResponseModel,
     UserModel,
 } from '../../../api';
@@ -28,16 +28,13 @@ export const isLoadingUser = createReducer<boolean, RootAction>(false)
         (_, __) => false,
     );
 
-export const user = createReducer<
-    FindByEmailResultApiResponseModel | null,
-    RootAction
->(null)
+export const user = createReducer<UserModel | null, RootAction>(null)
     .handleAction(
         [
             rootAction.user.getUserByEmail.success,
             rootAction.user.createUser.success,
         ],
-        (state, action) => ({ ...action.payload.data }),
+        (state, action) => action.payload.data ?? null,
     )
     .handleAction(
         [
@@ -74,20 +71,20 @@ export const userError = createReducer<ApiResponseModel | null, RootAction>(
             rootAction.user.deleteUser.request,
             rootAction.user.deleteUser.success,
             rootAction.user.clearUser,
+            rootAction.user.clearError,
         ],
         (_, __) => null,
     );
 
-const users = createReducer<UserModel[], RootAction>([]).handleAction(
-    [rootAction.user.getUsers.success],
-    (state, action) => {
+const users = createReducer<UserModel[], RootAction>([])
+    .handleAction([rootAction.user.getUsers.success], (state, action) => {
         if ((action.payload.data?.currentPage ?? 1) === 1) {
             return action.payload.data?.items ?? [];
         } else {
             return [...(state ?? []), ...(action.payload.data?.items ?? [])];
         }
-    },
-);
+    })
+    .handleAction([rootAction.user.clearUsers], (_, __) => []);
 
 const isLoadingUsers = createReducer<boolean, RootAction>(false)
     .handleAction([rootAction.user.getUsers.request], (_, __) => true)

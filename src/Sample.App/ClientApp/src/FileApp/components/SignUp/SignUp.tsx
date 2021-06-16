@@ -11,7 +11,13 @@ import { QueryStringParser } from '../../lib/QueryStringParser';
 
 export const SignUp = () => {
     const history = useHistory();
-    const { user, createUserRequest, isLoadingUser, userError } = useUserApi();
+    const {
+        user,
+        createUserRequest,
+        isLoadingUser,
+        userError,
+        clearErrorRequest,
+    } = useUserApi();
     const { addMessage } = useMessaging();
 
     const [formState, setFormState] = useState<FormState>({
@@ -92,6 +98,7 @@ export const SignUp = () => {
                 detail: <p>{userError.message}</p>,
                 color: 'is-danger',
             });
+            clearErrorRequest();
         }
     }, [userError]);
 

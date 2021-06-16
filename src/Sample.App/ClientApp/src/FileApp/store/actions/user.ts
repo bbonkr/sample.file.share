@@ -1,9 +1,9 @@
+import { AxiosError } from 'axios';
 import { ActionType, createAction, createAsyncAction } from 'typesafe-actions';
 import {
     ApiResponseModel,
     CreateUserCommand,
-    CreateUserResultApiResponseModel,
-    FindByEmailResultApiResponseModel,
+    UserModelApiResponseModel,
     UserModelIPagedModelApiResponseModel,
 } from '../../../api';
 
@@ -13,31 +13,33 @@ import {
     GetUsersRequest,
 } from '../../models/users';
 
-export const getUserByEmail = createAsyncAction(
+const getUserByEmail = createAsyncAction(
     'get-user-by-email/request',
     'get-user-by-email/success',
     'get-user-by-email/failure',
-)<GetUserByEmailRequest, FindByEmailResultApiResponseModel, ApiResponseModel>();
+)<GetUserByEmailRequest, UserModelApiResponseModel, ApiResponseModel>();
 
-export const createUser = createAsyncAction(
+const createUser = createAsyncAction(
     'create-user/request',
     'create-user/success',
     'create-user/failure',
-)<CreateUserCommand, CreateUserResultApiResponseModel, ApiResponseModel>();
+)<CreateUserCommand, UserModelApiResponseModel, ApiResponseModel>();
 
-export const deleteUser = createAsyncAction(
+const deleteUser = createAsyncAction(
     'delete-user/request',
     'delete-user/success',
     'delete-user/failure',
 )<DeleteUserByIdRequest, ApiResponseModel, ApiResponseModel>();
 
-export const getUsers = createAsyncAction(
+const getUsers = createAsyncAction(
     'get-users/request',
     'get-users/success',
     'get-users/failure',
 )<GetUsersRequest, UserModelIPagedModelApiResponseModel, ApiResponseModel>();
 
 export const clearUser = createAction('clear-user')();
+export const clearUsers = createAction('clear-users')();
+const clearError = createAction('clear-error')();
 
 export const userActions = {
     getUserByEmail,
@@ -45,6 +47,8 @@ export const userActions = {
     deleteUser,
     getUsers,
     clearUser,
+    clearUsers,
+    clearError,
 };
 
 export type UserActions = ActionType<typeof userActions>;

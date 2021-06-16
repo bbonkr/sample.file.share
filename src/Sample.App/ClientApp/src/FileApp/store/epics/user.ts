@@ -5,29 +5,24 @@ import { filter, map, switchMap, catchError, mergeMap } from 'rxjs/operators';
 import { RootState } from '../reducers';
 import { ApiClient } from '../../services';
 import { RootAction, rootAction } from '../actions';
-import { ApiResponseModel } from '../../../api';
-import { AxiosResponse } from 'axios';
 
-const loadUserEpic: Epic<RootAction, RootAction, RootState, ApiClient> = (
-    action$,
-    state$,
-    api,
-) =>
-    action$.pipe(
-        filter(isActionOf(rootAction.user.getUserByEmail.request)),
-        switchMap((action) => {
-            const { email } = action.payload;
+const findUserByEmailEpic: Epic<RootAction, RootAction, RootState, ApiClient> =
+    (action$, state$, api) =>
+        action$.pipe(
+            filter(isActionOf(rootAction.user.getUserByEmail.request)),
+            switchMap((action) => {
+                const { email } = action.payload;
 
-            return from(api.users.apiv10UsersFindByEmail(email)).pipe(
-                map((value) =>
-                    rootAction.user.getUserByEmail.success(value.data),
-                ),
-                catchError((error: AxiosResponse<ApiResponseModel>) =>
-                    of(rootAction.user.getUserByEmail.failure(error.data)),
-                ),
-            );
-        }),
-    );
+                return from(api.users.apiv10UsersFindByEmail(email)).pipe(
+                    map((value) =>
+                        rootAction.user.getUserByEmail.success(value.data),
+                    ),
+                    catchError((error) =>
+                        of(rootAction.user.getUserByEmail.failure(error.data)),
+                    ),
+                );
+            }),
+        );
 
 const createUserEpic: Epic<RootAction, RootAction, RootState, ApiClient> = (
     action$,
@@ -41,9 +36,9 @@ const createUserEpic: Epic<RootAction, RootAction, RootState, ApiClient> = (
                 mergeMap((value) =>
                     of(rootAction.user.createUser.success(value.data)),
                 ),
-                catchError((error: AxiosResponse<ApiResponseModel>) =>
-                    of(rootAction.user.createUser.failure(error.data)),
-                ),
+                catchError((error) => {
+                    return of(rootAction.user.createUser.failure(error.data));
+                }),
             );
         }),
     );
@@ -59,7 +54,7 @@ const deleteUserEpic: Epic<RootAction, RootAction, RootState, ApiClient> = (
             const { email } = action.payload;
             return from(api.users.apiv10UsersDelete(email)).pipe(
                 map((value) => rootAction.user.deleteUser.success(value.data)),
-                catchError((error: AxiosResponse<ApiResponseModel>) =>
+                catchError((error) =>
                     of(rootAction.user.deleteUser.failure(error.data)),
                 ),
             );
@@ -79,7 +74,7 @@ const getUsersEpic: Epic<RootAction, RootAction, RootState, ApiClient> = (
                 api.users.apiv10UsersGetUsers(page, limit, keyword),
             ).pipe(
                 map((value) => rootAction.user.getUsers.success(value.data)),
-                catchError((error: AxiosResponse<ApiResponseModel>) =>
+                catchError((error) =>
                     of(rootAction.user.getUsers.failure(error.data)),
                 ),
             );
@@ -87,7 +82,7 @@ const getUsersEpic: Epic<RootAction, RootAction, RootState, ApiClient> = (
     );
 
 export const userEpic = combineEpics(
-    loadUserEpic,
+    findUserByEmailEpic,
     createUserEpic,
     deleteUserEpic,
     getUsersEpic,

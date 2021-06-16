@@ -68,62 +68,6 @@ export interface CreateUserCommand {
 /**
  * 
  * @export
- * @interface CreateUserResult
- */
-export interface CreateUserResult {
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateUserResult
-     */
-    userName?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateUserResult
-     */
-    displayName?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateUserResult
-     */
-    email?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateUserResult
-     */
-    id?: string | null;
-}
-/**
- * 
- * @export
- * @interface CreateUserResultApiResponseModel
- */
-export interface CreateUserResultApiResponseModel {
-    /**
-     * 
-     * @type {number}
-     * @memberof CreateUserResultApiResponseModel
-     */
-    statusCode?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof CreateUserResultApiResponseModel
-     */
-    message?: string | null;
-    /**
-     * 
-     * @type {CreateUserResult}
-     * @memberof CreateUserResultApiResponseModel
-     */
-    data?: CreateUserResult;
-}
-/**
- * 
- * @export
  * @interface FileItemModel
  */
 export interface FileItemModel {
@@ -163,6 +107,31 @@ export interface FileItemModel {
      * @memberof FileItemModel
      */
     createdAt?: number;
+}
+/**
+ * 
+ * @export
+ * @interface FileItemModelIListApiResponseModel
+ */
+export interface FileItemModelIListApiResponseModel {
+    /**
+     * 
+     * @type {number}
+     * @memberof FileItemModelIListApiResponseModel
+     */
+    statusCode?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof FileItemModelIListApiResponseModel
+     */
+    message?: string | null;
+    /**
+     * 
+     * @type {Array<FileItemModel>}
+     * @memberof FileItemModelIListApiResponseModel
+     */
+    data?: Array<FileItemModel> | null;
 }
 /**
  * 
@@ -225,62 +194,6 @@ export interface FileItemModelIPagedModelApiResponseModel {
      * @memberof FileItemModelIPagedModelApiResponseModel
      */
     data?: FileItemModelIPagedModel;
-}
-/**
- * 
- * @export
- * @interface FindByEmailResult
- */
-export interface FindByEmailResult {
-    /**
-     * 
-     * @type {string}
-     * @memberof FindByEmailResult
-     */
-    userName?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof FindByEmailResult
-     */
-    displayName?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof FindByEmailResult
-     */
-    email?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof FindByEmailResult
-     */
-    id?: string | null;
-}
-/**
- * 
- * @export
- * @interface FindByEmailResultApiResponseModel
- */
-export interface FindByEmailResultApiResponseModel {
-    /**
-     * 
-     * @type {number}
-     * @memberof FindByEmailResultApiResponseModel
-     */
-    statusCode?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof FindByEmailResultApiResponseModel
-     */
-    message?: string | null;
-    /**
-     * 
-     * @type {FindByEmailResult}
-     * @memberof FindByEmailResultApiResponseModel
-     */
-    data?: FindByEmailResult;
 }
 /**
  * 
@@ -348,50 +261,6 @@ export interface ShareFileResultApiResponseModel {
 /**
  * 
  * @export
- * @interface UploadFileResult
- */
-export interface UploadFileResult {
-    /**
-     * 
-     * @type {string}
-     * @memberof UploadFileResult
-     */
-    name?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof UploadFileResult
-     */
-    uri?: string | null;
-}
-/**
- * 
- * @export
- * @interface UploadFileResultIListApiResponseModel
- */
-export interface UploadFileResultIListApiResponseModel {
-    /**
-     * 
-     * @type {number}
-     * @memberof UploadFileResultIListApiResponseModel
-     */
-    statusCode?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof UploadFileResultIListApiResponseModel
-     */
-    message?: string | null;
-    /**
-     * 
-     * @type {Array<UploadFileResult>}
-     * @memberof UploadFileResultIListApiResponseModel
-     */
-    data?: Array<UploadFileResult> | null;
-}
-/**
- * 
- * @export
  * @interface UserModel
  */
 export interface UserModel {
@@ -419,6 +288,31 @@ export interface UserModel {
      * @memberof UserModel
      */
     id?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface UserModelApiResponseModel
+ */
+export interface UserModelApiResponseModel {
+    /**
+     * 
+     * @type {number}
+     * @memberof UserModelApiResponseModel
+     */
+    statusCode?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserModelApiResponseModel
+     */
+    message?: string | null;
+    /**
+     * 
+     * @type {UserModel}
+     * @memberof UserModelApiResponseModel
+     */
+    data?: UserModel;
 }
 /**
  * 
@@ -765,7 +659,7 @@ export const FilesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiv10FilesUpload(xApiKey?: string, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UploadFileResultIListApiResponseModel>> {
+        async apiv10FilesUpload(xApiKey?: string, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FileItemModelIListApiResponseModel>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiv10FilesUpload(xApiKey, files, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -829,7 +723,7 @@ export const FilesApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiv10FilesUpload(xApiKey?: string, files?: Array<any>, options?: any): AxiosPromise<UploadFileResultIListApiResponseModel> {
+        apiv10FilesUpload(xApiKey?: string, files?: Array<any>, options?: any): AxiosPromise<FileItemModelIListApiResponseModel> {
             return localVarFp.apiv10FilesUpload(xApiKey, files, options).then((request) => request(axios, basePath));
         },
     };
@@ -1072,7 +966,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiv10UsersCreate(createUserCommand?: CreateUserCommand, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CreateUserResultApiResponseModel>> {
+        async apiv10UsersCreate(createUserCommand?: CreateUserCommand, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserModelApiResponseModel>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiv10UsersCreate(createUserCommand, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1092,7 +986,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiv10UsersFindByEmail(email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<FindByEmailResultApiResponseModel>> {
+        async apiv10UsersFindByEmail(email: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserModelApiResponseModel>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiv10UsersFindByEmail(email, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1124,7 +1018,7 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiv10UsersCreate(createUserCommand?: CreateUserCommand, options?: any): AxiosPromise<CreateUserResultApiResponseModel> {
+        apiv10UsersCreate(createUserCommand?: CreateUserCommand, options?: any): AxiosPromise<UserModelApiResponseModel> {
             return localVarFp.apiv10UsersCreate(createUserCommand, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1142,7 +1036,7 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiv10UsersFindByEmail(email: string, options?: any): AxiosPromise<FindByEmailResultApiResponseModel> {
+        apiv10UsersFindByEmail(email: string, options?: any): AxiosPromise<UserModelApiResponseModel> {
             return localVarFp.apiv10UsersFindByEmail(email, options).then((request) => request(axios, basePath));
         },
         /**

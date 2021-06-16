@@ -12,7 +12,13 @@ import { FaEnvelope, FaCheck } from 'react-icons/fa';
 export const SignIn = () => {
     const location = useLocation();
     const history = useHistory();
-    const { user, getUserRequest, isLoadingUser, userError } = useUserApi();
+    const {
+        user,
+        getUserByEmailRequest,
+        isLoadingUser,
+        userError,
+        clearErrorRequest,
+    } = useUserApi();
     const { addMessage } = useMessaging();
 
     const [formState, setFormState] = useState<FormState>({
@@ -48,7 +54,7 @@ export const SignIn = () => {
             schema
                 .validate(formState.values)
                 .then((result) => {
-                    getUserRequest({ ...result });
+                    getUserByEmailRequest({ ...result });
                 })
                 .catch((err) => {
                     console.error(err.errors);
@@ -103,6 +109,7 @@ export const SignIn = () => {
                 detail: <p>{userError.message}</p>,
                 color: 'is-danger',
             });
+            clearErrorRequest();
         }
     }, [userError]);
 

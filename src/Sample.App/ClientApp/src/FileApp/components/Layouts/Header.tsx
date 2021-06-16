@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { LinkModel } from '../../models';
+import { LinkModel, AppOptions } from '../../models';
 import { GenericLink } from '../GenericLink';
-import { AppOptions } from '../../constants';
 import { FaGithub, FaArrowLeft } from 'react-icons/fa';
+import { useUserApi } from '../../hooks/useUserApi';
 
 import './Header.css';
-import { useUserApi } from '../../hooks/useUserApi';
-import { useChatApi } from '../../hooks/useChatApi';
 
 interface HeaderProps {
     appOptions?: AppOptions;
@@ -15,7 +13,7 @@ interface HeaderProps {
 
 export const Header = ({ appOptions, menuRoutes }: HeaderProps) => {
     const { user, clearUserRequest } = useUserApi();
-    const { chatClient, selectedThread, clearSelectedThread } = useChatApi();
+
     const [navbarMenuIsActive, setNavbarMenuIsActive] = useState(false);
     const handleClickMenu = () => {
         window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
@@ -34,19 +32,7 @@ export const Header = ({ appOptions, menuRoutes }: HeaderProps) => {
     };
 
     const handleClickSignout = () => {
-        if (chatClient) {
-            chatClient
-                .stopRealtimeNotifications()
-                .then(() => {
-                    console.info('Chat client stopped');
-                })
-                .catch((err) => {
-                    console.error('Chat client could not stop.', err);
-                })
-                .finally(() => {
-                    clearUserRequest();
-                });
-        }
+        clearUserRequest();
     };
 
     const handleWindowResize = () => {
@@ -62,9 +48,7 @@ export const Header = ({ appOptions, menuRoutes }: HeaderProps) => {
         }
     };
 
-    const handleClickBack = () => {
-        clearSelectedThread();
-    };
+    const handleClickBack = () => {};
 
     useEffect(() => {
         // let observer: MutationObserver;
@@ -131,16 +115,6 @@ export const Header = ({ appOptions, menuRoutes }: HeaderProps) => {
                 style={{ zIndex: 1001 }}
             >
                 <div className="navbar-brand">
-                    <div className="navbar-item is-hidden-tablet">
-                        {selectedThread && (
-                            <button
-                                className="button is-black"
-                                onClick={handleClickBack}
-                            >
-                                <FaArrowLeft />
-                            </button>
-                        )}
-                    </div>
                     <GenericLink
                         record={{ href: '/', title: '' }}
                         classNames={['navbar-item']}

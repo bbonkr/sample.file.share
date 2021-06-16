@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Content } from './Content';
 import { GenericLink } from '../GenericLink';
 import { ScrollToTop } from '../ScrollToTop';
-import { AppOptions } from '../../constants';
+import { AppOptions } from '../../models';
 
 interface FooterProps {
     appOptions: AppOptions;
