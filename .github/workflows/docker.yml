@@ -41,7 +41,7 @@ jobs:
           labels: |
             org.opencontainers.image.title=Sample File Share
             org.opencontainers.image.description=File sharing sample web app
-            # org.opencontainers.image.vendor=bbon
+            org.opencontainers.image.vendor=bbonkr
 
       -
         name: Set up QEMU
