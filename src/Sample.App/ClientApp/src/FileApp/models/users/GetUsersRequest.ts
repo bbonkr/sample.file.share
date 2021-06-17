@@ -1,3 +1,3 @@
 import { PagedModelRequestBase } from '../PagedModelRequestBase';
-
-export type GetUsersRequest = PagedModelRequestBase;
+import { AuthorizedRequest } from '../AuthorizedRequest';
+export type GetUsersRequest = PagedModelRequestBase & AuthorizedRequest;

@@ -90,8 +90,57 @@ const deleteFileEpic: Epic<RootAction, RootAction, RootState, ApiClient> = (
                         fileId: fileId,
                     }),
                 ),
+                catchError((error) => {
+                    return of(rootAction.file.deleteFile.failure(error.data));
+                }),
+            );
+        }),
+    );
+
+const getFilesSharedToMeEpic: Epic<
+    RootAction,
+    RootAction,
+    RootState,
+    ApiClient
+> = (action$, state$, api) =>
+    action$.pipe(
+        filter(isActionOf(rootAction.file.getFilesSharedToMe.request)),
+        switchMap((action) => {
+            const { page, limit, keyword, xApiKey } = action.payload;
+
+            return from(
+                api.files.apiv10FilesSharedToMe(xApiKey, page, limit, keyword),
+            ).pipe(
+                map((value) =>
+                    rootAction.file.getFilesSharedToMe.success(value.data),
+                ),
                 catchError((error) =>
-                    of(rootAction.file.deleteFile.failure(error.data)),
+                    of(rootAction.file.getFilesSharedToMe.failure(error.data)),
+                ),
+            );
+        }),
+    );
+
+const deleteFileSharingEpic: Epic<
+    RootAction,
+    RootAction,
+    RootState,
+    ApiClient
+> = (action$, state$, api) =>
+    action$.pipe(
+        filter(isActionOf(rootAction.file.deleteFileSharing.request)),
+        switchMap((action) => {
+            const { xApiKey, id } = action.payload;
+
+            return from(api.files.apiv10FilesDeleteSharing(id, xApiKey)).pipe(
+                map((value) =>
+                    rootAction.file.deleteFileSharing.success({
+                        ...value.data,
+                        id: id,
+                    }),
+                ),
+                catchError((error) =>
+                    of(rootAction.file.deleteFileSharing.failure(error.data)),
                 ),
             );
         }),
@@ -102,6 +151,8 @@ export const fileEpic = combineEpics(
     uploadFileEpic,
     shareFileEpic,
     deleteFileEpic,
+    getFilesSharedToMeEpic,
+    deleteFileSharingEpic,
 );
 
 export type FileEpic = ReturnType<typeof fileEpic>;

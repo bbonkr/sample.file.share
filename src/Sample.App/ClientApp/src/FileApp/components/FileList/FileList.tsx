@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useUserApi } from '../../hooks/useUserApi';
 import { useFileApi } from '../../hooks/useFileApi';
 import { AuthProvider } from '../AuthProvider';
@@ -7,21 +8,28 @@ import { FileUpload } from './FileUpload';
 import { FileItemModel, UserModel } from '../../../api';
 import { ShareFileDialog } from '../ShareFileDialog';
 import { useMessaging } from '../../hooks/useMessaging';
+import { Modal } from '../Layouts';
 
 const FileList = () => {
+    const FILE_LIST_LIMIT = 10;
     const { user, clearUsersRequest } = useUserApi();
     const { addMessage } = useMessaging();
     const {
         files,
+        hasMoreFiles,
         isLoadingFiles,
+        fileError,
         getFilesRequest,
         uploadFilesRequest,
         deleteFileRequest,
         shareFileRequest,
         fileShareResult,
+        clearErrorRequest,
     } = useFileApi();
-
+    const [fileListPage, setFileListPage] = useState(1);
     const [shareFileDialogOpen, setShareFileDialogOpen] = useState(false);
+    const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] =
+        useState(false);
     const [selectedFile, setSelectedFile] =
         useState<FileItemModel | null>(null);
 
@@ -31,12 +39,19 @@ const FileList = () => {
         }
     };
 
-    const handleDeleteFile = (item: FileItemModel) => () => {
-        if (user && user.email && item.id) {
+    const handleOpenDeleteConfirmationDialog = (file: FileItemModel) => () => {
+        setSelectedFile((_) => file);
+        setDeleteConfirmationDialogOpen((_) => true);
+    };
+
+    const handleDeleteFile = () => {
+        if (user && user.email && selectedFile?.id) {
             deleteFileRequest({
                 xApiKey: user.email,
-                fileId: item.id,
+                fileId: selectedFile.id,
             });
+
+            handleCloseDeleteConfirmationDialog();
         }
     };
 
@@ -49,6 +64,11 @@ const FileList = () => {
     const handleCloseShareFileDialog = () => {
         setSelectedFile((_) => null);
         setShareFileDialogOpen((_) => false);
+    };
+
+    const handleCloseDeleteConfirmationDialog = () => {
+        setSelectedFile((_) => null);
+        setDeleteConfirmationDialogOpen((_) => false);
     };
 
     const handleShare = (
@@ -68,8 +88,22 @@ const FileList = () => {
                             expiresOn: expiresOn,
                         },
                     });
+
+                    handleCloseShareFileDialog();
                 }
             }
+        }
+    };
+
+    const handleClickGetMore = () => {
+        if (user && user.email) {
+            getFilesRequest({
+                xApiKey: user.email,
+                page: fileListPage + 1,
+                keyword: '',
+                limit: FILE_LIST_LIMIT,
+            });
+            setFileListPage((prevState) => prevState + 1);
         }
     };
 
@@ -77,9 +111,9 @@ const FileList = () => {
         if (user && user.email) {
             getFilesRequest({
                 xApiKey: user.email,
-                page: 1,
+                page: fileListPage,
                 keyword: '',
-                limit: 10,
+                limit: FILE_LIST_LIMIT,
             });
         }
     }, []);
@@ -89,17 +123,37 @@ const FileList = () => {
             addMessage({
                 id: `${+new Date()}`,
                 title: 'Notification',
-                detail: ``,
+                detail: `Token is ${fileShareResult.token}`,
                 duration: 'long',
                 color: 'is-success',
             });
         }
     }, [fileShareResult, isLoadingFiles]);
 
+    useEffect(() => {
+        if (fileError) {
+            addMessage({
+                id: `${+new Date()}`,
+                title: 'Alert',
+                detail: fileError.message,
+                duration: 'long',
+                color: 'is-danger',
+            });
+            clearErrorRequest();
+        }
+    }, [fileError]);
+
     return (
         <AuthProvider>
+            <Helmet title="My files" />
             <div className="is-flex is-flex-direction-column is-prevent-height-100 p-header">
-                <Section title={`🌈 Welcome ${user?.displayName}`}>
+                <Section
+                    title={`🌈 Welcome ${user?.displayName}`}
+                    subtitle="My files"
+                    useHero
+                    heroColor="is-success"
+                />
+                <Section>
                     <Content>
                         <FileUpload
                             isLoading={isLoadingFiles}
@@ -117,54 +171,83 @@ const FileList = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {files.map((f) => {
-                                    return (
-                                        <tr
-                                            key={f.id}
-                                            className={`${
-                                                selectedFile?.id === f.id
-                                                    ? 'is-selected'
-                                                    : ''
-                                            }`}
+                                {files.length > 0 ? (
+                                    files.map((f) => {
+                                        return (
+                                            <tr
+                                                key={f.id}
+                                                className={`${
+                                                    selectedFile?.id === f.id
+                                                        ? 'is-selected'
+                                                        : ''
+                                                }`}
+                                            >
+                                                <td>
+                                                    <div className="is-grouped">
+                                                        <button
+                                                            className="button"
+                                                            onClick={handleOpenShareFileDialog(
+                                                                f,
+                                                            )}
+                                                        >
+                                                            Share
+                                                        </button>
+                                                        <button
+                                                            className="button"
+                                                            onClick={handleOpenDeleteConfirmationDialog(
+                                                                f,
+                                                            )}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td>{f.name}</td>
+                                                <td>{f.size}</td>
+                                                <td>{f.contentType}</td>
+                                                <td>
+                                                    {f.uri && (
+                                                        <a
+                                                            href={f.uri}
+                                                            target="_blank"
+                                                            className="button"
+                                                        >
+                                                            Download
+                                                        </a>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td
+                                            colSpan={5}
+                                            className="has-text-centered"
                                         >
-                                            <td>
-                                                <div className="is-grouped">
-                                                    <button
-                                                        className="button"
-                                                        onClick={handleOpenShareFileDialog(
-                                                            f,
-                                                        )}
-                                                    >
-                                                        Share
-                                                    </button>
-                                                    <button
-                                                        className="button"
-                                                        onClick={handleDeleteFile(
-                                                            f,
-                                                        )}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                </div>
-                                            </td>
-                                            <td>{f.name}</td>
-                                            <td>{f.size}</td>
-                                            <td>{f.contentType}</td>
-                                            <td>
-                                                {f.uri && (
-                                                    <a
-                                                        href={f.uri}
-                                                        target="_blank"
-                                                        className="button"
-                                                    >
-                                                        Download
-                                                    </a>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                            Threr is no file
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
+
+                            {files.length > 0 && hasMoreFiles && (
+                                <tfoot>
+                                    <tr>
+                                        <td
+                                            colSpan={5}
+                                            className="has-text-centered"
+                                        >
+                                            <button
+                                                className="button"
+                                                onClick={handleClickGetMore}
+                                            >
+                                                Get more
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            )}
                         </table>
                     </Content>
                 </Section>
@@ -174,6 +257,28 @@ const FileList = () => {
                 file={selectedFile}
                 onClose={handleCloseShareFileDialog}
                 onShare={handleShare}
+            />
+            <Modal
+                open={deleteConfirmationDialogOpen}
+                title="Confirmation"
+                body="Are you sure to delete file?"
+                onClose={handleCloseDeleteConfirmationDialog}
+                footer={
+                    <div className="is-grouped">
+                        <button
+                            className="button"
+                            onClick={handleCloseDeleteConfirmationDialog}
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            className="button is-danger"
+                            onClick={handleDeleteFile}
+                        >
+                            Delete
+                        </button>
+                    </div>
+                }
             />
         </AuthProvider>
     );

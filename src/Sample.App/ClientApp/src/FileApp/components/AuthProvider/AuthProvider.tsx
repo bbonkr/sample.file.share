@@ -9,10 +9,10 @@ export const AuthProvider = ({
 }: PropsWithChildren<AuthProviderProps>) => {
     const history = useHistory();
     const location = useLocation();
-    const { user } = useUserApi();
+    const { user, isLoadingUser } = useUserApi();
 
     useEffect(() => {
-        if (!user) {
+        if (!user && !isLoadingUser) {
             history.replace(
                 `/signin?returnUrl=${encodeURIComponent(
                     `${location.pathname}${location.search}`,

@@ -34,8 +34,9 @@ export const ShareFileDialog = ({
     const [selectedUsers, setSelectedUsers] = useState<UserModel[]>([]);
 
     const handleChangeSearchKeyword = throttle((keyword: string) => {
-        if (!isLoadingUsers && keyword) {
+        if (!isLoadingUsers && keyword && user && user.email) {
             getUsersRequest({
+                xApiKey: user.email,
                 keyword: keyword,
                 page: 1,
                 limit: USER_LIST_LIMIT,

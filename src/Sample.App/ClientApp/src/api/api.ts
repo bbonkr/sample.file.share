@@ -231,7 +231,7 @@ export interface ShareFileResult {
      * @type {number}
      * @memberof ShareFileResult
      */
-    expiresOn?: number;
+    expiresOn?: number | null;
 }
 /**
  * 
@@ -257,6 +257,111 @@ export interface ShareFileResultApiResponseModel {
      * @memberof ShareFileResultApiResponseModel
      */
     data?: ShareFileResult;
+}
+/**
+ * 
+ * @export
+ * @interface SharedFileModel
+ */
+export interface SharedFileModel {
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedFileModel
+     */
+    id?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedFileModel
+     */
+    name?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedFileModel
+     */
+    contentType?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SharedFileModel
+     */
+    size?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedFileModel
+     */
+    token?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SharedFileModel
+     */
+    expiresOn?: number | null;
+}
+/**
+ * 
+ * @export
+ * @interface SharedFileModelIPagedModel
+ */
+export interface SharedFileModelIPagedModel {
+    /**
+     * 
+     * @type {number}
+     * @memberof SharedFileModelIPagedModel
+     */
+    currentPage?: number;
+    /**
+     * 
+     * @type {Array<SharedFileModel>}
+     * @memberof SharedFileModelIPagedModel
+     */
+    items?: Array<SharedFileModel> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof SharedFileModelIPagedModel
+     */
+    limit?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof SharedFileModelIPagedModel
+     */
+    totalItems?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof SharedFileModelIPagedModel
+     */
+    totalPages?: number;
+}
+/**
+ * 
+ * @export
+ * @interface SharedFileModelIPagedModelApiResponseModel
+ */
+export interface SharedFileModelIPagedModelApiResponseModel {
+    /**
+     * 
+     * @type {number}
+     * @memberof SharedFileModelIPagedModelApiResponseModel
+     */
+    statusCode?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SharedFileModelIPagedModelApiResponseModel
+     */
+    message?: string | null;
+    /**
+     * 
+     * @type {SharedFileModelIPagedModel}
+     * @memberof SharedFileModelIPagedModelApiResponseModel
+     */
+    data?: SharedFileModelIPagedModel;
 }
 /**
  * 
@@ -423,6 +528,44 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {string} id 
+         * @param {string} [xApiKey] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiv10FilesDeleteSharing: async (id: string, xApiKey?: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiv10FilesDeleteSharing', 'id', id)
+            const localVarPath = `/api/v1/Files/Sharing/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (xApiKey !== undefined && xApiKey !== null) {
+                localVarHeaderParameter['X-Api-Key'] = String(xApiKey);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {string} token 
          * @param {string} [xApiKey] 
          * @param {*} [options] Override http request option.
@@ -553,6 +696,55 @@ export const FilesApiAxiosParamCreator = function (configuration?: Configuration
         /**
          * 
          * @param {string} [xApiKey] 
+         * @param {number} [page] 
+         * @param {number} [limit] 
+         * @param {string} [keyword] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiv10FilesSharedToMe: async (xApiKey?: string, page?: number, limit?: number, keyword?: string, options: any = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/Files/SharedToMe`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (keyword !== undefined) {
+                localVarQueryParameter['keyword'] = keyword;
+            }
+
+            if (xApiKey !== undefined && xApiKey !== null) {
+                localVarHeaderParameter['X-Api-Key'] = String(xApiKey);
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} [xApiKey] 
          * @param {Array<any>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -618,6 +810,17 @@ export const FilesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} id 
+         * @param {string} [xApiKey] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiv10FilesDeleteSharing(id: string, xApiKey?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseModel>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiv10FilesDeleteSharing(id, xApiKey, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
          * @param {string} token 
          * @param {string} [xApiKey] 
          * @param {*} [options] Override http request option.
@@ -655,6 +858,19 @@ export const FilesApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {string} [xApiKey] 
+         * @param {number} [page] 
+         * @param {number} [limit] 
+         * @param {string} [keyword] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiv10FilesSharedToMe(xApiKey?: string, page?: number, limit?: number, keyword?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SharedFileModelIPagedModelApiResponseModel>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiv10FilesSharedToMe(xApiKey, page, limit, keyword, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @param {string} [xApiKey] 
          * @param {Array<any>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -682,6 +898,16 @@ export const FilesApiFactory = function (configuration?: Configuration, basePath
          */
         apiv10FilesDelete(fileId: string, xApiKey?: string, options?: any): AxiosPromise<ApiResponseModel> {
             return localVarFp.apiv10FilesDelete(fileId, xApiKey, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} id 
+         * @param {string} [xApiKey] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiv10FilesDeleteSharing(id: string, xApiKey?: string, options?: any): AxiosPromise<ApiResponseModel> {
+            return localVarFp.apiv10FilesDeleteSharing(id, xApiKey, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -719,6 +945,18 @@ export const FilesApiFactory = function (configuration?: Configuration, basePath
         /**
          * 
          * @param {string} [xApiKey] 
+         * @param {number} [page] 
+         * @param {number} [limit] 
+         * @param {string} [keyword] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiv10FilesSharedToMe(xApiKey?: string, page?: number, limit?: number, keyword?: string, options?: any): AxiosPromise<SharedFileModelIPagedModelApiResponseModel> {
+            return localVarFp.apiv10FilesSharedToMe(xApiKey, page, limit, keyword, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} [xApiKey] 
          * @param {Array<any>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -746,6 +984,18 @@ export class FilesApi extends BaseAPI {
      */
     public apiv10FilesDelete(fileId: string, xApiKey?: string, options?: any) {
         return FilesApiFp(this.configuration).apiv10FilesDelete(fileId, xApiKey, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} id 
+     * @param {string} [xApiKey] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FilesApi
+     */
+    public apiv10FilesDeleteSharing(id: string, xApiKey?: string, options?: any) {
+        return FilesApiFp(this.configuration).apiv10FilesDeleteSharing(id, xApiKey, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -785,6 +1035,20 @@ export class FilesApi extends BaseAPI {
      */
     public apiv10FilesMyFiles(xApiKey?: string, page?: number, limit?: number, keyword?: string, options?: any) {
         return FilesApiFp(this.configuration).apiv10FilesMyFiles(xApiKey, page, limit, keyword, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} [xApiKey] 
+     * @param {number} [page] 
+     * @param {number} [limit] 
+     * @param {string} [keyword] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof FilesApi
+     */
+    public apiv10FilesSharedToMe(xApiKey?: string, page?: number, limit?: number, keyword?: string, options?: any) {
+        return FilesApiFp(this.configuration).apiv10FilesSharedToMe(xApiKey, page, limit, keyword, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -908,13 +1172,14 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {string} [xApiKey] 
          * @param {number} [page] 
          * @param {number} [limit] 
          * @param {string} [keyword] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiv10UsersGetUsers: async (page?: number, limit?: number, keyword?: string, options: any = {}): Promise<RequestArgs> => {
+        apiv10UsersGetUsers: async (xApiKey?: string, page?: number, limit?: number, keyword?: string, options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/Users`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -937,6 +1202,10 @@ export const UsersApiAxiosParamCreator = function (configuration?: Configuration
 
             if (keyword !== undefined) {
                 localVarQueryParameter['keyword'] = keyword;
+            }
+
+            if (xApiKey !== undefined && xApiKey !== null) {
+                localVarHeaderParameter['X-Api-Key'] = String(xApiKey);
             }
 
 
@@ -992,14 +1261,15 @@ export const UsersApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {string} [xApiKey] 
          * @param {number} [page] 
          * @param {number} [limit] 
          * @param {string} [keyword] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiv10UsersGetUsers(page?: number, limit?: number, keyword?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserModelIPagedModelApiResponseModel>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.apiv10UsersGetUsers(page, limit, keyword, options);
+        async apiv10UsersGetUsers(xApiKey?: string, page?: number, limit?: number, keyword?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserModelIPagedModelApiResponseModel>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiv10UsersGetUsers(xApiKey, page, limit, keyword, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -1041,14 +1311,15 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @param {string} [xApiKey] 
          * @param {number} [page] 
          * @param {number} [limit] 
          * @param {string} [keyword] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiv10UsersGetUsers(page?: number, limit?: number, keyword?: string, options?: any): AxiosPromise<UserModelIPagedModelApiResponseModel> {
-            return localVarFp.apiv10UsersGetUsers(page, limit, keyword, options).then((request) => request(axios, basePath));
+        apiv10UsersGetUsers(xApiKey?: string, page?: number, limit?: number, keyword?: string, options?: any): AxiosPromise<UserModelIPagedModelApiResponseModel> {
+            return localVarFp.apiv10UsersGetUsers(xApiKey, page, limit, keyword, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1095,6 +1366,7 @@ export class UsersApi extends BaseAPI {
 
     /**
      * 
+     * @param {string} [xApiKey] 
      * @param {number} [page] 
      * @param {number} [limit] 
      * @param {string} [keyword] 
@@ -1102,8 +1374,8 @@ export class UsersApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof UsersApi
      */
-    public apiv10UsersGetUsers(page?: number, limit?: number, keyword?: string, options?: any) {
-        return UsersApiFp(this.configuration).apiv10UsersGetUsers(page, limit, keyword, options).then((request) => request(this.axios, this.basePath));
+    public apiv10UsersGetUsers(xApiKey?: string, page?: number, limit?: number, keyword?: string, options?: any) {
+        return UsersApiFp(this.configuration).apiv10UsersGetUsers(xApiKey, page, limit, keyword, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

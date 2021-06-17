@@ -12,7 +12,7 @@ export class ApiClient {
                 if (axios.isAxiosError(err)) {
                     const axiosErr = err as AxiosError<ApiResponseModel>;
 
-                    throw axiosErr.response?.data;
+                    throw axiosErr.response;
                 }
                 throw err;
             },

@@ -20,3 +20,14 @@ export type DeleteFileRequest = AuthorizedRequest & {
 export type DeleteFileResponse = ApiResponseModel & {
     fileId: string;
 };
+
+export type GetFilesSharedToMeRequest = PagedModelRequestBase &
+    AuthorizedRequest;
+
+export type DeleteFileSharingRequest = AuthorizedRequest & {
+    id: string;
+};
+
+export type DeleteFileSharingApiResponseModel = ApiResponseModel & {
+    id: string;
+};

@@ -16,6 +16,7 @@ const NotFound = React.lazy(() => import('../NotFound'));
 const SignIn = React.lazy(() => import('../SignIn'));
 const SignUp = React.lazy(() => import('../SignUp'));
 const FileList = React.lazy(() => import('../FileList'));
+const DownloadFile = React.lazy(() => import('../DownloadFile'));
 
 const helmetContext = {};
 
@@ -33,7 +34,13 @@ export const App = () => {
                 <MessagingProvider>
                     <BrowserRouter>
                         <Suspense fallback={<Loading />}>
-                            <Header appOptions={appOptions} />
+                            <Header
+                                appOptions={appOptions}
+                                menuRoutes={[
+                                    { href: '/', title: 'My files' },
+                                    { href: '/shared', title: 'Shared files' },
+                                ]}
+                            />
                             <Switch>
                                 <Route path="/" exact>
                                     <FileList />
@@ -47,8 +54,8 @@ export const App = () => {
                                 <Route path="/404">
                                     <NotFound />
                                 </Route>
-                                <Route path="/threads" exact>
-                                    <EmptyRequiredAuth />
+                                <Route path="/shared">
+                                    <DownloadFile />
                                 </Route>
                                 {/* <Route path="/chats/:id" exact>
                                         <Chat />

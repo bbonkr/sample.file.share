@@ -4,6 +4,7 @@ import { PagedModelRequestBase } from '../../models/PagedModelRequestBase';
 import {
     DeleteUserByIdRequest,
     GetUserByEmailRequest,
+    GetUsersRequest,
 } from '../../models/users';
 import { rootAction } from '../../store/actions';
 
@@ -23,7 +24,7 @@ export const useUserApi = () => {
             dispatch(rootAction.user.createUser.request(payload)),
         deleteUserRequest: (payload: DeleteUserByIdRequest) =>
             dispatch(rootAction.user.deleteUser.request(payload)),
-        getUsersRequest: (payload: PagedModelRequestBase) =>
+        getUsersRequest: (payload: GetUsersRequest) =>
             dispatch(rootAction.user.getUsers.request(payload)),
         clearUserRequest: () => dispatch(rootAction.user.clearUser()),
         clearUsersRequest: () => dispatch(rootAction.user.clearUsers()),

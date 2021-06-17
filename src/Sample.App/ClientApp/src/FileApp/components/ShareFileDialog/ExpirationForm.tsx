@@ -37,12 +37,13 @@ export const ExpirationForm = ({ onChange }: ExpirationFormProps) => {
                     'Expiration date, time',
                     date,
                     time,
-                    dayjs(`${date} ${time || '00:00'}`).unix(),
+                    dayjs(`${date} ${time || '00:00'}`).unix() * 1000,
                     new Date(
                         dayjs(`${date} ${time || '00:00'}`).unix() * 1000,
                     ).toISOString(),
                 );
-                const expiresOn = dayjs(`${date} ${time || '00:00'}`).unix();
+                const expiresOn =
+                    dayjs(`${date} ${time || '00:00'}`).unix() * 1000;
 
                 onChange(expiresOn);
             } else {

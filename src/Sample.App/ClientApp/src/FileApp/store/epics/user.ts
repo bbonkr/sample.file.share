@@ -69,9 +69,9 @@ const getUsersEpic: Epic<RootAction, RootAction, RootState, ApiClient> = (
     action$.pipe(
         filter(isActionOf(rootAction.user.getUsers.request)),
         switchMap((action) => {
-            const { page, limit, keyword } = action.payload;
+            const { xApiKey, page, limit, keyword } = action.payload;
             return from(
-                api.users.apiv10UsersGetUsers(page, limit, keyword),
+                api.users.apiv10UsersGetUsers(xApiKey, page, limit, keyword),
             ).pipe(
                 map((value) => rootAction.user.getUsers.success(value.data)),
                 catchError((error) =>
