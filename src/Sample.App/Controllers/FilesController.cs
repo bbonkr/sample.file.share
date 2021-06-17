@@ -19,6 +19,7 @@ using kr.bbon.AspNetCore.Models;
 using kr.bbon.EntityFrameworkCore.Extensions;
 using System.ComponentModel.DataAnnotations;
 using Sample.Mediator.FileShareDomain.Models;
+using Sample.Services;
 
 namespace Sample.App.Controllers
 {
@@ -32,9 +33,12 @@ namespace Sample.App.Controllers
     [ApiExceptionHandlerFilter]
     public class FilesController:ApiControllerBase
     {
-        public FilesController(IMediator mediator)
+        public FilesController(
+            IMediator mediator, 
+            DateTimeConvertService dateTimeConvertService)
         {
             this.mediator = mediator;
+            this.dateTimeConvertService = dateTimeConvertService;
         }
 
         /// <summary>
@@ -158,7 +162,7 @@ namespace Sample.App.Controllers
             {
                 FileId = fileId,
                 To = model.To,
-                ExpiresOn = DateTimeOffset.FromUnixTimeSeconds(model.ExpiresOn),
+                ExpiresOn = dateTimeConvertService.ToDateTimeOffset(model.ExpiresOn),
                 UserImpersonate = auth,
             };
 
@@ -194,9 +198,53 @@ namespace Sample.App.Controllers
             return StatusCode(HttpStatusCode.Accepted);
         }
 
+        [HttpGet]
+        [Route("SharedToMe")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponseModel<IPagedModel<SharedFileModel>>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponseModel))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
+        public async Task<IActionResult> SharedToMe(
+            [FromHeader(Name = "X-Api-Key")] string auth,
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 10,
+            [FromQuery] string keyword = "")
+        {
+            var query = new SharedToMeQuery
+            {
+                UserImpersonate = auth,
+                Page = page,
+                Limit = limit,
+                Keyword = keyword,
+            };
 
+            var result = await mediator.Send(query);
+
+            return StatusCode(StatusCodes.Status200OK, result);
+        }
+
+        [HttpDelete]
+        [Route("Sharing/{id:guid}")]
+        [ProducesResponseType((int)HttpStatusCode.Accepted, Type = typeof(ApiResponseModel))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ApiResponseModel))]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
+        public async Task<IActionResult> DeleteSharing(
+            [FromHeader(Name = "X-Api-Key")] string auth,
+            [FromRoute] Guid id)
+        {
+            var command = new DeleteShareCommand
+            {
+                UserImpersonate = auth,
+                ShareId = id,
+            };
+
+            await mediator.Send(command);
+
+            return StatusCode(StatusCodes.Status202Accepted);
+        }
 
         private readonly IMediator mediator;
+        private readonly DateTimeConvertService dateTimeConvertService;
     }
 
     public class GenerateTokenRequest

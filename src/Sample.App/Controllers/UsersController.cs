@@ -46,10 +46,15 @@ namespace Sample.App.Controllers
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponseModel<IPagedModel<UserModel>>))]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError, Type = typeof(ApiResponseModel))]
-        public async Task<IActionResult> GetUsers(int page = 1, int limit = 10, string keyword = "")
+        public async Task<IActionResult> GetUsers(
+            [FromHeader(Name = "X-Api-Key")] string auth, 
+            [FromQuery] int page = 1,
+            [FromQuery] int limit = 10,
+            [FromQuery] string keyword = "")
         {
             var query = new GetUsersQuery
             {
+                UserImpersonate= auth,
                 Page = page,
                 Limit = limit,
                 Keyword = keyword,

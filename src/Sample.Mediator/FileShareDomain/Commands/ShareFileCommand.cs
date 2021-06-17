@@ -28,14 +28,14 @@ namespace Sample.Mediator.FileShareDomain.Commands
 
         public Guid To { get; set; }
 
-        public DateTimeOffset ExpiresOn { get; set; }
+        public DateTimeOffset? ExpiresOn { get; set; }
     }
 
     public class ShareFileResult
     {
         public string Token { get; set; }
 
-        public long ExpiresOn { get; set; }
+        public long? ExpiresOn { get; set; }
     }
 
     public class ShareFileCommandHandler : IRequestHandler<ShareFileCommand, ShareFileResult>
@@ -43,10 +43,12 @@ namespace Sample.Mediator.FileShareDomain.Commands
         public ShareFileCommandHandler(
             DefaultDbContext dbContext,
             ITokenService tokenService,
+            DateTimeConvertService dateTimeConvertService,
             ILogger<UploadFileCommandHander> logger)
         {
             this.dbContext = dbContext;
             this.tokenService = tokenService;
+            this.dateTimeConvertService = dateTimeConvertService;
             this.logger = logger;
         }
 
@@ -116,12 +118,13 @@ namespace Sample.Mediator.FileShareDomain.Commands
             return new ShareFileResult
             {
                 Token = token,
-                ExpiresOn = request.ExpiresOn.Ticks,
+                ExpiresOn = (long?)dateTimeConvertService.ToJavascriptDate(request.ExpiresOn),
             };
         }
 
         private readonly DefaultDbContext dbContext;
         private readonly ITokenService tokenService;
+        private readonly DateTimeConvertService dateTimeConvertService;
         private readonly ILogger logger;
     }
 }

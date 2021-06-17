@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using kr.bbon.Core;
+
 using MediatR;
 
 using Microsoft.EntityFrameworkCore;
@@ -21,8 +23,6 @@ namespace Sample.Mediator.UserDomain.Commands
         
     }
 
-    
-
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserModel>
     {
         public CreateUserCommandHandler(
@@ -37,7 +37,8 @@ namespace Sample.Mediator.UserDomain.Commands
         {
             if (dbContext.Users.Where(x => x.Email == request.Email.Trim()).Any())
             {
-                throw new Exception($"Email could not use. It's registered already.");
+                //throw new Exception($"Email could not use. It's registered already.");
+                throw new HttpStatusException<object>(System.Net.HttpStatusCode.BadRequest, $"Email could not use. It's registered already.", null);
             }
 
             var user = new Entities.User
