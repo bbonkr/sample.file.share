@@ -31,7 +31,7 @@ namespace Sample.Data.Configurations
             builder.Property(x => x.Token)
                 .IsRequired()
                 .HasMaxLength(1000)
-                .HasComment("Access token '/api/file/{token}'");
+                .HasComment("Access token '/api/files/{token}'");
 
             builder.Property(x => x.ExpiresOn)
                 .HasComment("Expires access");
@@ -40,11 +40,13 @@ namespace Sample.Data.Configurations
 
             builder.HasOne(x => x.User)
                 .WithMany(x => x.FileAccess)
-                .HasForeignKey(x => x.UserId);
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(x => x.File)
                 .WithMany(x => x.FileAccess)
-                .HasForeignKey(x => x.FileId);
+                .HasForeignKey(x => x.FileId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -58,5 +58,12 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddTransient<ITokenService, TokenService>();
             return services;
         }
+
+        public static IServiceCollection AddDateTimeConvertService(this IServiceCollection services)
+        {
+            services.AddTransient<DateTimeConvertService>();
+
+            return services;
+        }
     }
 }

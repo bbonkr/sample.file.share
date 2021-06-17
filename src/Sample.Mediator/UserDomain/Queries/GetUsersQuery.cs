@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using kr.bbon.Core;
 using kr.bbon.EntityFrameworkCore.Extensions;
 
 using MediatR;
@@ -17,6 +18,13 @@ namespace Sample.Mediator.UserDomain.Queries
 {
     public class GetUsersQuery : IRequest<IPagedModel<UserModel>>
     {
+        /// <summary>
+        /// User authentication
+        /// 
+        /// <para>Use your email address Temporarily. ;)</para>
+        /// </summary>
+        public string UserImpersonate { get; set; }
+
         public int Page { get; set; }
 
         public int Limit { get; set; }
@@ -35,6 +43,16 @@ namespace Sample.Mediator.UserDomain.Queries
         }
         public async Task<IPagedModel<UserModel>> Handle(GetUsersQuery request, CancellationToken cancellationToken)
         {
+            var user = await dbContext.Users
+               .Where(x => x.Email == request.UserImpersonate)
+               .AsNoTracking()
+               .FirstOrDefaultAsync(cancellationToken);
+
+            if (user == null)
+            {
+                throw new HttpStatusException<object>(System.Net.HttpStatusCode.Unauthorized, "Access deny", null);
+            }
+
             var keyword = request.Keyword.Trim();
             var query = dbContext.Users
                 .WhereDependOn(!string.IsNullOrEmpty(keyword), x => EF.Functions.Like(x.DisplayName, $"%{keyword }%") || EF.Functions.Like(x.Email, $"%{keyword }%"));

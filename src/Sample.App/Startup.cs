@@ -2,10 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using kr.bbon.AspNetCore.Options;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,29 +50,38 @@ namespace Sample.App
 
             services.AddDomainServices(Configuration);
 
-            services.AddControllers();
+            services.AddControllersWithViews();
 
             services.AddApiVersioningAndSwaggerGen(apiVersion);
+            
+            services.AddHealthChecks().AddCheck<DefaultHealthCheck>("Default_Health_check");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseDatabaseMigration();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwaggerUIWithApiVersioning();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseAuthorization();
 
+            app.UseHealthChecks(new Microsoft.AspNetCore.Http.PathString("/health"));
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index", "Home");
             });
         }
     }

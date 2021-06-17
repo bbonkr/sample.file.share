@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 using Sample.Data;
+using Sample.Mediator.FileShareDomain.Models;
 
 namespace Sample.Mediator.FileShareDomain.Queries
 {
@@ -30,23 +31,6 @@ namespace Sample.Mediator.FileShareDomain.Queries
         public int Limit { get; set; }
 
         public string Keyword { get; set; }
-    }
-
-    
-
-    public class FileItemModel
-    {
-        public string Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string ContentType { get; set; }
-
-        public long Size { get; set; }
-
-        public string Uri { get; set; }
-
-        public long CreatedAt { get; set; } 
     }
 
     public class MyFilesQueryHandler : IRequestHandler<MyFilesQuery, IPagedModel<FileItemModel>>

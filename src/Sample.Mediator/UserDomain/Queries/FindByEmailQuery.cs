@@ -15,17 +15,13 @@ using Sample.Mediator.UserDomain.Models;
 
 namespace Sample.Mediator.UserDomain.Queries
 {
-    public class FindByEmailQuery : IRequest<FindByEmailResult>
+    public class FindByEmailQuery : IRequest<UserModel>
     {
         public string Email { get; set; }
     }
 
-    public class FindByEmailResult: UserModel
-    {
-      
-    }
 
-    public class FindByEmailQueryHandler : IRequestHandler<FindByEmailQuery, FindByEmailResult>
+    public class FindByEmailQueryHandler : IRequestHandler<FindByEmailQuery, UserModel>
     {
         public FindByEmailQueryHandler(
             DefaultDbContext dbContext,
@@ -35,15 +31,15 @@ namespace Sample.Mediator.UserDomain.Queries
             this.logger = logger;
         }
 
-        public async Task<FindByEmailResult> Handle(FindByEmailQuery request, CancellationToken cancellationToken)
+        public async Task<UserModel> Handle(FindByEmailQuery request, CancellationToken cancellationToken)
         {
             var user = await dbContext.Users.Where(x => x.Email == request.Email)
                .FirstOrDefaultAsync(cancellationToken);
 
-            FindByEmailResult result = null;
+            UserModel result = null;
             if (user != null)
             {
-                result = new FindByEmailResult
+                result = new UserModel
                 {
                     Id = user.Id.ToString(),
                     UserName = user.UserName,

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using kr.bbon.Core;
+
 using MediatR;
 
 using Microsoft.EntityFrameworkCore;
@@ -16,14 +18,12 @@ using Sample.Mediator.UserDomain.Queries;
 
 namespace Sample.Mediator.UserDomain.Commands
 {
-    public class CreateUserCommand : UserBaseModel, IRequest<CreateUserResult>
+    public class CreateUserCommand : UserBaseModel, IRequest<UserModel>
     {
         
     }
 
-    public class CreateUserResult: UserModel { }
-
-    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, CreateUserResult>
+    public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, UserModel>
     {
         public CreateUserCommandHandler(
             DefaultDbContext dbContext,
@@ -33,16 +33,17 @@ namespace Sample.Mediator.UserDomain.Commands
             this.logger = logger;
         }
 
-        public async Task<CreateUserResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<UserModel> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             if (dbContext.Users.Where(x => x.Email == request.Email.Trim()).Any())
             {
-                throw new Exception($"Email could not use. It's registered already.");
+                //throw new Exception($"Email could not use. It's registered already.");
+                throw new HttpStatusException<object>(System.Net.HttpStatusCode.BadRequest, $"Email could not use. It's registered already.", null);
             }
 
             var user = new Entities.User
             {
-                UserName = request.UserName.Trim(),
+                UserName = request.Email.Trim(),
                 DisplayName = request.DisplayName.Trim(),
                 Email = request.Email.Trim(),
             };
@@ -53,7 +54,7 @@ namespace Sample.Mediator.UserDomain.Commands
 
             var result = await dbContext.Users
                 .Where(x => x.Email == request.Email.Trim())
-                .Select(x => new CreateUserResult
+                .Select(x => new UserModel
                 {
                     Id = x.Id.ToString(),
                     UserName = x.UserName,

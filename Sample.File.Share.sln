@@ -3,25 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.App", "src\Sample.App\Sample.App.csproj", "{6FB612D2-8888-41FA-B834-3D0332F416FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.App", "src\Sample.App\Sample.App.csproj", "{6FB612D2-8888-41FA-B834-3D0332F416FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Data", "src\Sample.Data\Sample.Data.csproj", "{10BC0A8C-6BEF-4417-9879-FE396C42AE88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Data", "src\Sample.Data\Sample.Data.csproj", "{10BC0A8C-6BEF-4417-9879-FE396C42AE88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Entities", "src\Sample.Entities\Sample.Entities.csproj", "{6B161A8C-1987-4CAE-8338-873F1B155D3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Entities", "src\Sample.Entities\Sample.Entities.csproj", "{6B161A8C-1987-4CAE-8338-873F1B155D3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Services", "src\Sample.Services\Sample.Services.csproj", "{74C00B63-5EE7-4C10-8440-6922DFC97D22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Services", "src\Sample.Services\Sample.Services.csproj", "{74C00B63-5EE7-4C10-8440-6922DFC97D22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Data.SqlServer", "src\Sample.Data.SqlServer\Sample.Data.SqlServer.csproj", "{81D5CDF1-C20C-458E-AC87-CFCB70DA840A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Data.SqlServer", "src\Sample.Data.SqlServer\Sample.Data.SqlServer.csproj", "{81D5CDF1-C20C-458E-AC87-CFCB70DA840A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.Mediator", "src\Sample.Mediator\Sample.Mediator.csproj", "{041D06E7-1594-4741-A822-81E387C6D463}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sample.Mediator", "src\Sample.Mediator\Sample.Mediator.csproj", "{041D06E7-1594-4741-A822-81E387C6D463}"
 EndProject
 Global
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4BDB95B2-6E87-41B3-9802-8B8FC7EF843C}
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -103,5 +97,11 @@ Global
 		{041D06E7-1594-4741-A822-81E387C6D463}.Release|x64.Build.0 = Release|Any CPU
 		{041D06E7-1594-4741-A822-81E387C6D463}.Release|x86.ActiveCfg = Release|Any CPU
 		{041D06E7-1594-4741-A822-81E387C6D463}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4BDB95B2-6E87-41B3-9802-8B8FC7EF843C}
 	EndGlobalSection
 EndGlobal

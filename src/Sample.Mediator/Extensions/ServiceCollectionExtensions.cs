@@ -21,6 +21,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .ConfigureAzureStorageAccountOptions(configuration)
                 .AddSampleAzureBlobStorageService()
                 .AddTokenService()
+                .AddDateTimeConvertService()
                 .AddMediatR(typeof(PlaceHolder).Assembly);
 
             return services;

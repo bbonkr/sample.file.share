@@ -64,7 +64,7 @@ namespace Sample.Mediator.FileShareDomain.Commands
 
                     var result = await azureBlobStorageService.DeleteAsync(willDelete.Name, cancellationToken);
 
-                    if (result)
+                    if (!result)
                     {
                         logger.LogInformation($"Azure Blob Storage Deletion Failed. UserId={user.Id} | FileId={willDelete.Id}");
                         throw new Exception("Could not delete this file.");
