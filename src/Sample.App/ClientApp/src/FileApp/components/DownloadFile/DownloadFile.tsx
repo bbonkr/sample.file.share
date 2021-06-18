@@ -157,12 +157,20 @@ const DownloadFile = () => {
                                     <th>Expires on</th>
                                     <th>Size</th>
                                     <th>Type</th>
-                                    <th>Note</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filesSharedToMe.length > 0 ? (
                                     filesSharedToMe.map((f) => {
+                                        const dayjsInstance = dayjs(
+                                            new Date(f.expiresOn ?? 0),
+                                        );
+
+                                        const expired =
+                                            dayjsInstance.toDate() <=
+                                            new Date();
+
                                         return (
                                             <tr key={f.token}>
                                                 <td>
@@ -190,18 +198,26 @@ const DownloadFile = () => {
                                                 <td>{f.name}</td>
                                                 <td>
                                                     {f.expiresOn
-                                                        ? `${dayjs(
-                                                              new Date(
-                                                                  f.expiresOn ??
-                                                                      0,
-                                                              ),
-                                                          ).format(
+                                                        ? `${dayjsInstance.format(
                                                               'YYYY-MM-DD HH:mm',
                                                           )}`
                                                         : 'No limit'}
                                                 </td>
                                                 <td>{f.size}</td>
                                                 <td>{f.contentType}</td>
+                                                <td className="text-has-centered">
+                                                    <span
+                                                        className={`tag ${
+                                                            expired
+                                                                ? 'is-danger'
+                                                                : 'is-success'
+                                                        }`}
+                                                    >
+                                                        {expired
+                                                            ? 'Expired'
+                                                            : 'Valid'}
+                                                    </span>
+                                                </td>
                                             </tr>
                                         );
                                     })
@@ -221,7 +237,7 @@ const DownloadFile = () => {
                                     <tfoot>
                                         <tr>
                                             <td
-                                                colSpan={5}
+                                                colSpan={6}
                                                 className="has-text-centered"
                                             >
                                                 <button
