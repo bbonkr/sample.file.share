@@ -27,9 +27,9 @@ export const App = () => {
         <Provider store={store}>
             <HelmetProvider context={helmetContext}>
                 <Helmet
-                    title="Chat"
-                    titleTemplate="%s - Chat Sample App"
-                    defaultTitle="Chat Sample App"
+                    title="File Sharing"
+                    titleTemplate="%s - File Share Sample App"
+                    defaultTitle="File Share Sample App"
                 />
                 <MessagingProvider>
                     <BrowserRouter>
