@@ -11,9 +11,11 @@ import Axios from 'axios';
 import { appOptions } from '../../constants';
 import { FileDownloadHelper } from '@bbon/filedownload';
 import dayjs from 'dayjs';
+import { StringFormatter } from '@bbon/formatter';
 
 const DownloadFile = () => {
     const FILE_LIST_LIMIT = 10;
+
     const { user } = useUserApi();
     const { addMessage } = useMessaging();
     const {
@@ -154,9 +156,11 @@ const DownloadFile = () => {
                                 <tr>
                                     <th>{` `}</th>
                                     <th>Name</th>
-                                    <th>Expires on</th>
-                                    <th>Size</th>
-                                    <th>Type</th>
+                                    <th className="has-text-centered">
+                                        Expires on
+                                    </th>
+                                    <th className="has-text-right">Size</th>
+                                    <th className="has-text-centered">Type</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -170,6 +174,8 @@ const DownloadFile = () => {
                                         const expired =
                                             dayjsInstance.toDate() <=
                                             new Date();
+                                        const stringFormatter =
+                                            new StringFormatter();
 
                                         return (
                                             <tr key={f.token}>
@@ -196,15 +202,22 @@ const DownloadFile = () => {
                                                     )}
                                                 </td>
                                                 <td>{f.name}</td>
-                                                <td>
+                                                <td className="has-text-centered">
                                                     {f.expiresOn
                                                         ? `${dayjsInstance.format(
                                                               'YYYY-MM-DD HH:mm',
                                                           )}`
                                                         : 'No limit'}
                                                 </td>
-                                                <td>{f.size}</td>
-                                                <td>{f.contentType}</td>
+                                                <td className="has-text-right">
+                                                    {stringFormatter.fileSize(
+                                                        f.size ?? 0,
+                                                        stringFormatter.numberWithDelimiter,
+                                                    )}
+                                                </td>
+                                                <td className="has-text-centered">
+                                                    {f.contentType}
+                                                </td>
                                                 <td className="text-has-centered">
                                                     <span
                                                         className={`tag ${

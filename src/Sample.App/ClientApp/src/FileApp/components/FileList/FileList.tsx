@@ -9,9 +9,11 @@ import { FileItemModel, UserModel } from '../../../api';
 import { ShareFileDialog } from '../ShareFileDialog';
 import { useMessaging } from '../../hooks/useMessaging';
 import { Modal } from '../Layouts';
+import { StringFormatter } from '@bbon/formatter';
 
 const FileList = () => {
     const FILE_LIST_LIMIT = 10;
+
     const { user, clearUsersRequest } = useUserApi();
     const { addMessage } = useMessaging();
     const {
@@ -165,14 +167,16 @@ const FileList = () => {
                                 <tr>
                                     <th> </th>
                                     <th>Name</th>
-                                    <th>Size</th>
-                                    <th>Type</th>
+                                    <th className="has-text-right">Size</th>
+                                    <th className="has-text-centered">Type</th>
                                     <th>Note</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {files.length > 0 ? (
                                     files.map((f) => {
+                                        const stringFormatter =
+                                            new StringFormatter();
                                         return (
                                             <tr
                                                 key={f.id}
@@ -203,8 +207,15 @@ const FileList = () => {
                                                     </div>
                                                 </td>
                                                 <td>{f.name}</td>
-                                                <td>{f.size}</td>
-                                                <td>{f.contentType}</td>
+                                                <td className="has-text-right">
+                                                    {stringFormatter.fileSize(
+                                                        f.size ?? 0,
+                                                        stringFormatter.numberWithDelimiter,
+                                                    )}
+                                                </td>
+                                                <td className="has-text-centered">
+                                                    {f.contentType}
+                                                </td>
                                                 <td>
                                                     {f.uri && (
                                                         <a
