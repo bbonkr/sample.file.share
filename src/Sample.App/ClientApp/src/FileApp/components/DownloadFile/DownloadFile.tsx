@@ -224,7 +224,7 @@ const DownloadFile = () => {
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan={5}
+                                            colSpan={6}
                                             className="has-text-centered"
                                         >
                                             There is no file
