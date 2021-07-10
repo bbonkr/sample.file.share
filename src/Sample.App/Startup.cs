@@ -65,8 +65,9 @@ namespace Sample.App
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwaggerUIWithApiVersioning();
             }
+
+            app.UseSwaggerUIWithApiVersioning();
 
             //app.UseHttpsRedirection();
 
