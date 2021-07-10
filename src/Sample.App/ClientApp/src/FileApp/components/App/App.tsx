@@ -6,7 +6,8 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Loading } from '../Loading';
 import { MessagingProvider } from '../MessagingProvider';
 import { appOptions } from '../../constants';
-import { EmptyRequiredAuth } from '../Empty';
+import { persistStore } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import 'bulma/css/bulma.css';
 import './App.css';
@@ -22,56 +23,64 @@ const helmetContext = {};
 
 export const App = () => {
     const store = useStore();
+    const persistor = persistStore(store, {}, () => {
+        persistor.persist();
+    });
 
     return (
-        <Provider store={store}>
-            <HelmetProvider context={helmetContext}>
-                <Helmet
-                    title="File Sharing"
-                    titleTemplate="%s - File Share Sample App"
-                    defaultTitle="File Share Sample App"
-                />
-                <MessagingProvider>
-                    <BrowserRouter>
-                        <Suspense fallback={<Loading />}>
-                            <Header
-                                appOptions={appOptions}
-                                menuRoutes={[
-                                    { href: '/', title: 'My files' },
-                                    { href: '/shared', title: 'Shared files' },
-                                ]}
-                            />
-                            <Switch>
-                                <Route path="/" exact>
-                                    <FileList />
-                                </Route>
-                                <Route path="/signin" exact>
-                                    <SignIn />
-                                </Route>
-                                <Route path="/signup" exact>
-                                    <SignUp />
-                                </Route>
-                                <Route path="/404">
-                                    <NotFound />
-                                </Route>
-                                <Route path="/shared">
-                                    <DownloadFile />
-                                </Route>
-                                {/* <Route path="/chats/:id" exact>
+        <HelmetProvider context={helmetContext}>
+            <Provider store={store}>
+                <PersistGate loading={<Loading />} persistor={persistor}>
+                    <Helmet
+                        title="File Sharing"
+                        titleTemplate="%s - File Share Sample App"
+                        defaultTitle="File Share Sample App"
+                    />
+                    <MessagingProvider>
+                        <BrowserRouter>
+                            <Suspense fallback={<Loading />}>
+                                <Header
+                                    appOptions={appOptions}
+                                    menuRoutes={[
+                                        { href: '/', title: 'My files' },
+                                        {
+                                            href: '/shared',
+                                            title: 'Shared files',
+                                        },
+                                    ]}
+                                />
+                                <Switch>
+                                    <Route path="/" exact>
+                                        <FileList />
+                                    </Route>
+                                    <Route path="/signin" exact>
+                                        <SignIn />
+                                    </Route>
+                                    <Route path="/signup" exact>
+                                        <SignUp />
+                                    </Route>
+                                    <Route path="/404">
+                                        <NotFound />
+                                    </Route>
+                                    <Route path="/shared">
+                                        <DownloadFile />
+                                    </Route>
+                                    {/* <Route path="/chats/:id" exact>
                                         <Chat />
                                     </Route> */}
-                                <Route path="/loading">
-                                    <Loading />
-                                </Route>
-                                <Route path="*">
-                                    <Redirect to="/404" />
-                                </Route>
-                            </Switch>
-                        </Suspense>
-                    </BrowserRouter>
-                </MessagingProvider>
-            </HelmetProvider>
-        </Provider>
+                                    <Route path="/loading">
+                                        <Loading />
+                                    </Route>
+                                    <Route path="*">
+                                        <Redirect to="/404" />
+                                    </Route>
+                                </Switch>
+                            </Suspense>
+                        </BrowserRouter>
+                    </MessagingProvider>
+                </PersistGate>
+            </Provider>
+        </HelmetProvider>
     );
 };
 

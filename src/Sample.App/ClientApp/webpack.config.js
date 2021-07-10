@@ -30,12 +30,6 @@ module.exports = {
                 use: [
                     {
                         loader: 'babel-loader',
-                        // options: {
-                        //     plugins: [
-                        //         isDevelpoment() &&
-                        //             require('react-refresh/babel'),
-                        //     ].filter(Boolean),
-                        // },
                     },
                     'ts-loader',
                 ],
@@ -46,7 +40,12 @@ module.exports = {
             },
         ],
     },
-    plugins: [new webpack.LoaderOptionsPlugin({ dev: isDevelpoment() })],
+    plugins: [
+        new webpack.LoaderOptionsPlugin({ dev: isDevelpoment() }),
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: process.env.NODE_ENV || 'development',
+        }),
+    ],
     output: {
         filename: '[name]/[name].bundle.js',
         path: path.join(path.resolve(__dirname, '..'), 'wwwroot', 'bundles'),
